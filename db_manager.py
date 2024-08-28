@@ -19,6 +19,17 @@ class DatabaseManager:
         self.conn.commit()
         return cursor
     
+    def create_users(self):
+        query = '''
+            CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username VARCHAR(50) NOT NULL,
+            password VARCHAR(50) NOT NULL
+            );
+
+        '''
+        self.execute_query(query)
+    
     def create_pizzerias_table(self):
         query = '''
             CREATE TABLE IF NOT EXISTS pizzerias (
