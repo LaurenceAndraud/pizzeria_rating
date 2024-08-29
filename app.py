@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, redirect, url_for,jsonify, request, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from db_manager import DatabaseManager
+from db_manager import *
 import hashlib
 
 app = Flask(__name__)
@@ -88,6 +88,11 @@ def post_review():
 @login_required
 def index():
     return render_template('index.html')
+
+@app.route('/api/pizzerias', methods=['GET'])
+def api_pizzerias():
+    pizzerias = pizzeria_app.get_pizzerias()
+    return jsonify(pizzerias)
 
 if __name__ == '__main__':
     app.run(debug=True)
