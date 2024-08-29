@@ -6,7 +6,7 @@ import hashlib
 app = Flask(__name__)
 
 login_manager = LoginManager()
-login_manager.init_app()
+login_manager.init_app(app)
 
 db_manager = DatabaseManager('pizzeria_rating.db')
 
@@ -79,7 +79,6 @@ def post_review():
         db_manager.execute_query(query, pizzeria_id, review, rating, user_id)
         return redirect(url_for('index'))
 
-    # Suppose that you have a list of pizzerias from which users can choose
     query = 'SELECT id, name FROM pizzerias'
     pizzerias = db_manager.execute_query(query).fetchall()
     return render_template('post_review.html', pizzerias=pizzerias)
@@ -91,8 +90,8 @@ def index():
 
 @app.route('/api/pizzerias', methods=['GET'])
 def api_pizzerias():
-    pizzerias = pizzeria_app.get_pizzerias()
-    return jsonify(pizzerias)
+    pizzerias = db_manager.execute_query('SELECT * FROM pizzerias').fetchall()
+    return jsonify([dict(p) for p in pizzerias])
 
 if __name__ == '__main__':
     app.run(debug=True)
