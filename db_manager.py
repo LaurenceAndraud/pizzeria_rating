@@ -6,11 +6,12 @@ class DatabaseManager:
         self.conn = None
 
     def connect(self):
-        self.conn = sqlite3.connect(self.db_file)
+        self.conn = sqlite3.connect(self.db_file, check_same_thread=False)
 
     def close(self):
         if self.conn:
             self.conn.close()
+            self.conn = None
 
     def execute_query(self, query, *args):
         self.connect()
@@ -18,15 +19,14 @@ class DatabaseManager:
         cursor.execute(query, args)
         self.conn.commit()
         return cursor
-    
+
     def create_users(self):
         query = '''
             CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username VARCHAR(50) NOT NULL,
-            password VARCHAR(50) NOT NULL
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
             );
-
         '''
         self.execute_query(query)
     
@@ -34,6 +34,7 @@ class DatabaseManager:
         query = '''
             CREATE TABLE IF NOT EXISTS pizzerias (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
                 location TEXT NOT NULL,
                 creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );

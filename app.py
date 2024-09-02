@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, url_for,jsonify, request, session
+import hashlib
 from db_manager import *
 import hashlib
 
@@ -11,7 +12,7 @@ def login():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
-        hashed_password = hashlib.sha256(password.encode()).hexigest()
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
         query = 'SELECT id FROM users WHERE username = ? AND password = ?'
         cursor = db_manager.execute_query(query, username, hashed_password)
@@ -19,8 +20,9 @@ def login():
         
         if user:
             return redirect(url_for('index'))
-        return 'Invalid credentials'
-    
+        else:
+            return "Invalid username or password", 403
+            
     return render_template('login.html')
 
 @app.route('/logout')
