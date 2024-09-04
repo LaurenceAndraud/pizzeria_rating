@@ -34,6 +34,7 @@
     </style>
 </head>
 <body>
+    <h1>Welcome {{ user }}!</h1>
     <div class="container">
         <h2>Pizzerias Reviewing Map</h2>
         <div class="login-box">
@@ -42,6 +43,14 @@
     </div>
     
     <div id="map"></div>
+
+    {% if 'username' in session %}
+        <div class="actions">
+            <a href="{{ url_for('add_pizzeria') }}">Recenser une Pizzeria</a>
+            <a href="{{ url_for('add_review', pizzeria_id=1) }}">Poster un Avis</a>
+        </div>
+    {% endif %}
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         // Initialize the map
@@ -66,5 +75,11 @@
                 .bindPopup('<b>' + pizzeria.name + '</b>');
         });
     </script>
+
+    <div class="actions">
+        <a href="{{ url_for('add_pizzeria') }}">Recenser une Pizzeria</a>
+        <a href="{{ url_for('add_review', pizzeria_id=1) }}">Poster un Avis</a> <!-- Change 1 par l'ID réel de la pizzeria -->
+    </div>
+
 </body>
 </html>

@@ -71,3 +71,19 @@ class DatabaseManager:
         query = 'SELECT * FROM reviews WHERE pizzeria_id = ?'
         cursor = self.execute_query(query, pizzeria_id)
         return cursor.fetchall()
+    
+    def get_pizzeria_by_id(self, pizzeria_id):
+        query = "SELECT * FROM pizzerias WHERE id = ?"
+        cursor = self.execute_query(query, pizzeria_id)
+        return cursor.fetchone()
+
+    def get_user(self, username, hashed_password):
+        query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        args = (username, hashed_password)
+        cursor = self.execute_query(query, *args)
+        user = cursor.fetchone()
+        return user
+        
+    def save_user(self, username, password):
+        query = "INSERT INTO users (username, password) VALUES (?, ?)"
+        self.execute_query(query, username, password)
