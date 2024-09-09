@@ -36,6 +36,8 @@ class DatabaseManager:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 location TEXT NOT NULL,
+                latitude TEXT,
+                longitude TEXT,
                 creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         '''
@@ -54,9 +56,9 @@ class DatabaseManager:
         '''
         self.execute_query(query)
 
-    def save_pizzeria(self, name, location):
-        query = 'INSERT INTO pizzerias (name, location) VALUES (?, ?)'
-        self.execute_query(query, name, location)
+    def save_pizzeria(self, name, location, latitude, longitude):
+        query = 'INSERT INTO pizzerias (name, location, latitude, longitude) VALUES (?, ?, ?, ?)'
+        self.execute_query(query, name, location, latitude, longitude)
 
     def get_all_pizzerias(self):
         query = 'SELECT * FROM pizzerias'

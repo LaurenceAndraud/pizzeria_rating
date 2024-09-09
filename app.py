@@ -42,9 +42,11 @@ def add_pizzeria():
     if request.method == 'POST':
         name = request.form['name']
         location = request.form['location']
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
         
         db_manager = get_db_manager()
-        db_manager.save_pizzeria(name, location)
+        db_manager.save_pizzeria(name, location, latitude, longitude)
         
         return redirect(url_for('index'))
 

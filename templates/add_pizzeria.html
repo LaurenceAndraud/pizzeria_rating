@@ -3,18 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add a pizzeria</title>
+    <title>Add Pizzeria</title>
 </head>
 <body>
-    <h2>Ajouter une nouvelle Pizzeria</h2>
-    <form action="{{ url_for('add_pizzeria') }}" method="POST">
-        <label for="name">Nom de la Pizzeria:</label>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="location">Localisation:</label>
-        <input type="text" id="location" name="location" required><br><br>
-
-        <button type="submit">Ajouter</button>
+    <h1>Add a New Pizzeria</h1>
+    <form method="POST" action="/add_pizzeria" id="pizzeriaForm">
+        <label for="name">Pizzeria Name:</label>
+        <input type="text" id="name" name="name" required>
+    
+        <label for="location">Address:</label>
+        <input type="text" id="location" name="location" required>
+    
+        <input type="hidden" id="latitude" name="latitude" required>
+        <input type="hidden" id="longitude" name="longitude" required>
+    
+        <button type="submit">Add Pizzeria</button>
     </form>
+    
+    <div id="errorMessage"></div>
+
+    <!-- Script pour géocoder l'adresse -->
+    <script>
+        document.getElementById('pizzeriaForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêcher la soumission du formulaire immédiatement
+
+            var location = document.getElementById('location').value;
+            var apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var latitude = data[0].lat;
+                        var longitude = data[0].lon;
+
+                        // Remplir les champs cachés du formulaire avec les coordonnées
+                        document.getElementById('latitude').value = latitude;
+                        document.getElementById('longitude').value = longitude;
+
+                        // Soumettre le formulaire après avoir récupéré les coordonnées
+                        document.getElementById('pizzeriaForm').submit();
+                    } else {
+                        document.getElementById('errorMessage').innerText = 'Adresse introuvable. Veuillez vérifier l\'adresse.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des coordonnées :', error);
+                    document.getElementById('errorMessage').innerText = 'Erreur lors de la récupération des coordonnées. Veuillez réessayer plus tard.';
+                });
+        });
+    </script>
 </body>
 </html>
